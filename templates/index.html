@@ -1,235 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Work Planner</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-:root {
-  --bg:#f5f7fb; --card:#fff; --text:#1f2937;
-  --primary:#4f46e5; --accent:#22c55e; --border:#e5e7eb;
-}
-body.dark {
-  --bg:#0f172a; --card:#1e293b; --text:#f1f5f9;
-  --primary:#6366f1; --accent:#4ade80; --border:#334155;
-}
-body {
-  margin:0; font-family:Segoe UI; background:var(--bg); color:var(--text);
-}
-.container { max-width:600px; margin:auto; padding:20px; }
-
-.header { display:flex; justify-content:space-between; align-items:center; }
-.toggle { cursor:pointer; }
-
-.card {
-  background:var(--card);
-  padding:20px; margin-top:20px;
-  border-radius:14px;
-  border:1px solid var(--border);
-}
-
-input, button {
-  width:100%; padding:10px; margin-top:10px;
-  border-radius:8px; border:1px solid var(--border);
-}
-
-button {
-  background:var(--primary); color:#fff; border:none; cursor:pointer;
-}
-button.secondary { background:var(--accent); }
-
-.result-item {
-  display:flex; justify-content:space-between; margin-top:10px;
-}
-
-.timeline-bar {
-  height:20px; background:var(--border); border-radius:10px;
-}
-.timeline-progress {
-  height:100%; width:0%; background:linear-gradient(90deg,var(--primary),var(--accent));
-}
-
-.hidden { display:none; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chukspace Digital Solutions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-950 text-white font-sans">
 
-<div class="container">
+  <!-- NAVBAR -->
+  <header class="flex justify-between items-center px-8 py-6">
+    <h1 class="text-xl font-bold text-purple-400">CHUKSPACE</h1>
+    <nav class="hidden md:flex gap-6 text-gray-300">
+      <a href="#">Home</a>
+      <a href="#">Services</a>
+      <a href="#">Solutions</a>
+      <a href="#">About</a>
+    </nav>
+    <button class="bg-purple-600 px-4 py-2 rounded-lg">Book Call</button>
+  </header>
 
-<div class="header">
-  <h2>⏱ Work Planner</h2>
-  <div class="toggle" onclick="toggleDarkMode()">🌙</div>
-</div>
+  <!-- HERO -->
+  <section class="px-8 py-20 grid md:grid-cols-2 gap-10 items-center">
+    
+    <div>
+      <h2 class="text-5xl font-bold leading-tight mb-6">
+        We Help Businesses <span class="text-purple-400">Automate</span> Workflows
+      </h2>
+      <p class="text-gray-400 mb-6">
+        Save time, reduce manual work, and increase revenue with automation powered by Python & AI.
+      </p>
 
-<!-- INPUT -->
-<div class="card">
-  <input id="workHours" type="number" step="0.1" placeholder="Work hours (e.g. 7.5)">
-  <input id="breakTime" type="number" step="0.1" placeholder="Break (e.g. 0.5)">
-  <button onclick="setPlan()">Continue</button>
-</div>
+      <div class="flex gap-4">
+        <button class="bg-purple-600 px-6 py-3 rounded-lg">Book Free Consultation</button>
+        <button class="border border-gray-600 px-6 py-3 rounded-lg">View Services</button>
+      </div>
+    </div>
 
-<!-- CLOCK -->
-<div id="clockSection" class="card hidden">
-  <input type="time" id="clockIn">
-  <button onclick="generateSchedule()">Generate</button>
-</div>
+    <!-- Mock Dashboard -->
+    <div class="bg-gray-900 p-6 rounded-xl shadow-lg">
+      <h3 class="text-lg mb-4 text-purple-400">Automation Example</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li>✔ Lead Captured</li>
+        <li>✔ Auto Email Sent</li>
+        <li>✔ Appointment Booked</li>
+        <li>✔ Added to CRM</li>
+      </ul>
+    </div>
 
-<!-- RESULT -->
-<div id="result" class="card hidden">
-  <div class="result-item"><span>Break</span><b id="breakOut"></b></div>
-  <div class="result-item"><span>Back</span><b id="breakIn"></b></div>
-  <div class="result-item"><span>Finish</span><b id="finish"></b></div>
+  </section>
 
-  <button class="secondary" onclick="saveSession()">Save</button>
+  <!-- SERVICES -->
+  <section class="px-8 py-20">
+    <h2 class="text-3xl font-bold text-center mb-12">Our Services</h2>
 
-  <div class="timeline-bar">
-    <div id="progress" class="timeline-progress"></div>
-  </div>
-</div>
+    <div class="grid md:grid-cols-3 gap-8">
+      
+      <div class="bg-gray-900 p-6 rounded-xl">
+        <h3 class="text-xl font-semibold mb-3 text-purple-400">Lead Automation</h3>
+        <p class="text-gray-400">
+          Capture leads and respond instantly with automated workflows.
+        </p>
+      </div>
 
-<!-- ANALYTICS -->
-<div class="card">
-  <h3>📊 Analytics</h3>
-  <button onclick="loadAnalytics()">Load Analytics</button>
-  <div id="analytics"></div>
-  <canvas id="chart"></canvas>
-</div>
+      <div class="bg-gray-900 p-6 rounded-xl">
+        <h3 class="text-xl font-semibold mb-3 text-purple-400">Workflow Systems</h3>
+        <p class="text-gray-400">
+          Replace manual admin with efficient backend automation systems.
+        </p>
+      </div>
 
-<!-- HISTORY -->
-<div class="card">
-  <h3>📅 History</h3>
-  <button onclick="loadSessions()">Load Sessions</button>
-  <div id="sessions"></div>
-</div>
+      <div class="bg-gray-900 p-6 rounded-xl">
+        <h3 class="text-xl font-semibold mb-3 text-purple-400">AI Automation</h3>
+        <p class="text-gray-400">
+          Smart AI tools to handle repetitive tasks and customer interactions.
+        </p>
+      </div>
 
-</div>
+    </div>
+  </section>
 
-<script>
-let plan={}, last={};
+  <!-- RESULTS -->
+  <section class="px-8 py-20 bg-gray-900 text-center">
+    <h2 class="text-3xl font-bold mb-10">Real Results</h2>
 
-// -------- UTILS --------
-function decToMin(d){
-  const h=Math.floor(d);
-  return h*60 + Math.round((d-h)*60);
-}
-function timeToMin(t){
-  const [h,m]=t.split(":").map(Number);
-  return h*60+m;
-}
+    <div class="grid md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-4xl text-purple-400">240%</h3>
+        <p class="text-gray-400">Increase in Lead Engagement</p>
+      </div>
 
-// -------- PLAN --------
-function setPlan(){
-  plan.work=decToMin(parseFloat(workHours.value));
-  plan.break=decToMin(parseFloat(breakTime.value));
-  document.getElementById("clockSection").classList.remove("hidden");
-}
+      <div>
+        <h3 class="text-4xl text-purple-400">60%</h3>
+        <p class="text-gray-400">Reduction in Admin Work</p>
+      </div>
 
-// -------- GENERATE --------
-async function generateSchedule(){
-  const res=await fetch("/generate-schedule",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      clock_in:clockIn.value,
-      work_minutes:plan.work,
-      break_minutes:plan.break
-    })
-  });
-  const d=await res.json();
+      <div>
+        <h3 class="text-4xl text-purple-400">< 5 mins</h3>
+        <p class="text-gray-400">Response Time</p>
+      </div>
+    </div>
+  </section>
 
-  breakOut.innerText=d.break_start;
-  breakIn.innerText=d.break_end;
-  finish.innerText=d.finish;
+  <!-- CONTACT FORM -->
+  <section class="px-8 py-20 text-center">
+    <h2 class="text-3xl font-bold mb-6">Book a Free Consultation</h2>
 
-  last={
-    start_time:clockIn.value,
-    break_start:d.break_start,
-    break_end:d.break_end,
-    end_time:d.finish,
-    work_minutes:plan.work,
-    break_minutes:plan.break
-  };
+    <form id="leadForm" class="max-w-xl mx-auto space-y-4">
+      
+      <input type="text" id="name" placeholder="Your Name"
+        class="w-full p-3 rounded bg-gray-800 text-white" required>
 
-  document.getElementById("result").classList.remove("hidden");
-  startTimeline(clockIn.value,d.finish);
-}
+      <input type="email" id="email" placeholder="Your Email"
+        class="w-full p-3 rounded bg-gray-800 text-white" required>
 
-// -------- SAVE --------
-async function saveSession(){
-  await fetch("/save-session",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(last)
-  });
-  alert("Saved!");
-}
+      <textarea id="message" placeholder="What do you need help with?"
+        class="w-full p-3 rounded bg-gray-800 text-white"></textarea>
 
-// -------- ANALYTICS --------
-async function loadAnalytics(){
-  const res=await fetch("/analytics");
-  const d=await res.json();
+      <button type="submit"
+        class="bg-purple-600 px-6 py-3 rounded-lg w-full">
+        Submit
+      </button>
 
-  analytics.innerHTML=`
-    Days: ${d.total_days}<br>
-    Total Hours: ${d.total_work_hours}<br>
-    Avg: ${d.avg_work_hours}
-  `;
+    </form>
 
-  loadChart();
-}
+    <p id="responseMsg" class="mt-4 text-green-400"></p>
+  </section>
 
-async function loadChart(){
-  const res=await fetch("/analytics/daily");
-  const d=await res.json();
+  <!-- FOOTER -->
+  <footer class="text-center py-6 border-t border-gray-800 text-gray-500">
+    © 2026 Chukspace Digital Solutions
+  </footer>
 
-  new Chart(chart,{
-    type:"line",
-    data:{
-      labels:d.map(x=>x.date),
-      datasets:[{label:"Work Hours",data:d.map(x=>x.work_hours)}]
-    }
-  });
-}
+  <!-- SCRIPT (CONNECTS TO BACKEND) -->
+  <script>
+    document.getElementById("leadForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
 
-// -------- HISTORY --------
-async function loadSessions(){
-  const res=await fetch("/sessions");
-  const d=await res.json();
+      const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        message: document.getElementById("message").value
+      };
 
-  sessions.innerHTML=d.map(s=>
-    `<div>${s.date} | ${s.start_time} → ${s.end_time}</div>`
-  ).join("");
-}
+      try {
+        const res = await fetch("http://127.0.0.1:8000/submit-lead", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
 
-// -------- TIMELINE --------
-function startTimeline(start,end){
-  const s=timeToMin(start);
-  const e=timeToMin(end);
+        const result = await res.json();
+        document.getElementById("responseMsg").innerText = result.message;
 
-  function update(){
-    const now=new Date();
-    const c=now.getHours()*60+now.getMinutes();
-    const p=Math.min(Math.max((c-s)/(e-s),0),1);
-    progress.style.width=(p*100)+"%";
-  }
-
-  update();
-  setInterval(update,60000);
-}
-
-// -------- DARK MODE --------
-function toggleDarkMode(){
-  document.body.classList.toggle("dark");
-  localStorage.setItem("dark",document.body.classList.contains("dark"));
-}
-if(localStorage.getItem("dark")==="true"){
-  document.body.classList.add("dark");
-}
-</script>
+      } catch (error) {
+        document.getElementById("responseMsg").innerText = "Error connecting to server.";
+      }
+    });
+  </script>
 
 </body>
 </html>
